@@ -1,0 +1,20 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile-py
+    ports:
+      - 8008:8008
+
+    healthcheck:
+      test: "curl --fail http://localhost:8008/health || exit 1"
+      interval: 2s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+  curl:
+    depends_on:
+      web:
+        condition: service_healthy
+    image: "alpine/curl"
+    command: ["-fsSL", "http://web:8008/docs"]
