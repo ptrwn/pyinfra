@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-init-scripts
+data:
+  init.sql: |
+    CREATE TABLE test_table (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(50)
+    );
+
+    INSERT INTO test_table (name) VALUES ('Test Record');

@@ -1,38 +1,47 @@
-#### Homework 2 steps
+#### Homework 3 steps
 ----------------------------
 
-1. Build Docker image using the minimal FastAPI app from homework 1:
+1. Write yamls, or get ChatGPT to do that for you.
+
+2. Run docker desktop, then run minikube:
 
 ```bash
-$ docker build -t myfastapi .
+ $  minikube status
+ $  minikube start
 ```
 
-2. Check locally that it works:
+3. Run deployments, then services:
 
 ```bash
-$ docker run -it -p 8008:8008 ptrwn/myfastapi:latest
+ $  kubectl apply -f k8s/db-deployment.yaml
+ $  kubectl apply -f k8s/db-service.yaml
+ $  kubectl apply -f k8s/fastapi-deployment.yaml
+ $  kubectl apply -f k8s/fastapi-service.yaml
 ```
 
-3. Add dockerhub repo name to image tag and push the image to dockerhub repo:
-
+4. Unhappy path, troubleshooting:
 ```bash
-$ docker tag myfastapi:latest ptrwn/myfastapi:latest
-$ docker login
-$ docker push ptrwn/myfastapi:latest
+ $ kubectl describe pods db-deployment
+ $ kubectl logs  db-deployment-59bc7c4b87-4tj86
 ```
 
-4. Create and run a pod in local minikube:
+5. Found error in log:
 ```bash
-$ kubectl run hello --image=ptrwn/myfastapi:latest
+Events:
+  Type     Reason       Age                 From               Message
+  ----     ------       ----                ----               -------
+  Normal   Scheduled    15m                 default-scheduler  Successfully assigned default/db-deployment-59bc7c4b87-4tj86 to minikube
+  Warning  FailedMount  21s (x15 over 15m)  kubelet            MountVolume.SetUp failed for volume "init-scripts" : configmap "db-init-scripts" not found
 ```
 
-5. Forward port to expose it:
+6. Access the app:
 ```bash
-$ kubectl port-forward hello 5555:8008
+$ kubectl get svc fastapi-service # get port
+$ minikube ip # get IP
 ```
-Check that `http://127.0.0.1:5555/health` opens in browser.
 
-6. Delete the pod:
+If this does not work, do:
 ```bash
-$ kubectl delete pod hello
+$ minikube service fastapi-service
 ```
+This will create a tunnel for the service and make it available in browser.
