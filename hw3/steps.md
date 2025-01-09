@@ -33,6 +33,10 @@ Events:
   Normal   Scheduled    15m                 default-scheduler  Successfully assigned default/db-deployment-59bc7c4b87-4tj86 to minikube
   Warning  FailedMount  21s (x15 over 15m)  kubelet            MountVolume.SetUp failed for volume "init-scripts" : configmap "db-init-scripts" not found
 ```
+DB init ConfigMap was missing, added it and applied:
+```bash
+ $  kubectl apply -f k8s/db-init-scripts.yaml
+```
 
 6. Access the app:
 ```bash
