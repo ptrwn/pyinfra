@@ -1,0 +1,25 @@
+fastapi:
+  image: ptrwn/fastapi:latest
+  # tag: latest
+  pullPolicy: IfNotPresent 
+  replicas: 2
+  service:
+    type: NodePort  # Change to ClusterIP if using an ingress controller
+    port: 8008
+  env:
+    POSTGRES_HOST: "postgres-service"
+    POSTGRES_DB: "testdb"
+    POSTGRES_USER: "user"
+    POSTGRES_PASSWORD: "password"
+
+postgres:
+  image: "postgres:15"
+  persistence:
+    enabled: true
+    size: 1Gi  # Persistent storage size for database
+  service:
+    port: 5432
+  env:
+    POSTGRES_DB: "testdb"
+    POSTGRES_USER: "user"
+    POSTGRES_PASSWORD: "password"
